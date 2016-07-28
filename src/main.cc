@@ -14,15 +14,16 @@ void SetupDaemon() {
 
 } // namespace
 
-void StartDaemon(std::function<void(void)> daemon_func) {
+void StartDaemon(std::function<void(void)> daemon_func, bool wait_for_exit = false) {
     pid_t pid = fork();
 
     if (pid < 0) {
         throw std::runtime_error("Coudln't daemonize");
 
     } else if (pid > 0) {
-        // waitpid(pid, nullptr, 0); // wait for child to exit
-
+        if (wait_for_exit) {
+            waitpid(pid, nullptr, 0);
+        }
     } else {
         // child process
         SetupDaemon();
@@ -53,6 +54,7 @@ void zmq_client() {
 
     std::cout << static_cast<char*>(msg.data()) << std::endl;
 }
+
 int main() {
     try {
         StartDaemon([]() {

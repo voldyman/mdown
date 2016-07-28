@@ -3,6 +3,7 @@ include_directories(${THIRD_PARTY_DIR})
 
 # libzmq
 option(ZMQ_BUILD_TESTS OFF)
+option(WITH_PERF_TOOL OFF)
 add_subdirectory(${THIRD_PARTY_DIR}/libzmq)
 include_directories("${THIRD_PARTY_DIR}/libzmq/include")
 
