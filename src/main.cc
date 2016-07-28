@@ -5,14 +5,14 @@
 #include <unistd.h>
 
 #include "cppzmq/zmq.hpp"
+#include "gflags/gflags.h"
 
+DEFINE_bool(start, false, "Should start daemon");
 namespace {
 
 void SetupDaemon() {
     setsid();
 }
-
-} // namespace
 
 void StartDaemon(std::function<void(void)> daemon_func, bool wait_for_exit = false) {
     pid_t pid = fork();
@@ -55,7 +55,16 @@ void zmq_client() {
     std::cout << static_cast<char*>(msg.data()) << std::endl;
 }
 
-int main() {
+
+} // namespace
+int main(int argc, char* argv[]) {
+    gflags::SetVersionString("0.1");
+    gflags::SetUsageMessage("mDown is a download manager front end");
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
+
+    if (FLAGS_start) {
+        std::cout << "starting" << std::endl;
+    }
     try {
         StartDaemon([]() {
             zmq_server();

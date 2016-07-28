@@ -13,4 +13,4 @@ file(GLOB MDOWN_SOURCES src/*.cc)
 add_executable(${CMAKE_PROJECT_NAME}
   ${MDOWN_SOURCES})
 
-target_link_libraries(${CMAKE_PROJECT_NAME} cppzmq libzmq-static)
+target_link_libraries(${CMAKE_PROJECT_NAME} cppzmq libzmq-static gflags)
