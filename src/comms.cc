@@ -2,8 +2,8 @@
 
 #include <array>
 
-#include "cppzmq/zmq.hpp"
-#include "message.hh"
+#include <cppzmq/zmq.hpp>
+#include <message.hh>
 
 const int PORT = 2211;
 

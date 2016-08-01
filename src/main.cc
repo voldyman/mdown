@@ -2,8 +2,7 @@
 #include <iostream>
 #include <unistd.h>
 
-#include "cppzmq/zmq.hpp"
-#include "gflags/gflags.h"
+#include <gflags/gflags.h>
 
 #include "comms.hh"
 #include "message.hh"
