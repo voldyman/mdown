@@ -7,6 +7,19 @@
 
 const int PORT = 2211;
 
+namespace {
+// static
+zmq::message_t ZmqMessageFromString(const std::string& str) {
+    return zmq::message_t{str.c_str(), str.size()};
+}
+
+// static
+std::string StringFromZmqMessage(const zmq::message_t& message) {
+    const char* data = static_cast<const char*>(message.data());
+    return std::string(data, message.size());
+}
+} // namespace
+
 class Comms::Impl {
   public:
     Impl(CommsMode mode) : mode_{mode}, socket_{ctx_, zmq::socket_type::pair} {
@@ -20,14 +33,14 @@ class Comms::Impl {
         }
     }
 
-    bool Send(const Message& message) {
-        return socket_.send(message.GetZMQMessage());
+    bool Send(const std::string& message) {
+        return socket_.send(ZmqMessageFromString(message));
     }
 
-    bool Receive(Message* message) {
+    bool Receive(std::string* message) {
         zmq::message_t msg;
         if (socket_.recv(&msg)) {
-            message->Parse(msg);
+            *message = StringFromZmqMessage(msg);
             return true;
         } else {
             return false;
@@ -36,7 +49,7 @@ class Comms::Impl {
 
     bool Wait() {
         using std::chrono::milliseconds;
-        std::array<zmq::pollitem_t, 1> items = {{socket_, /* fd */ 0, ZMQ_POLLIN, /* revents */ 0}};
+        std::array<zmq::pollitem_t, 1> items = {{socket_, 0 /* fd */, ZMQ_POLLIN, 0 /* revents */}};
         int val = zmq::poll(items.data(), items.size(), milliseconds(3));
         if (val < 0) {
             // handle error condition ?
@@ -56,11 +69,11 @@ class Comms::Impl {
 
 Comms::Comms(CommsMode mode) : impl_{std::make_unique<Impl>(mode)} {}
 
-bool Comms::Send(const Message& msg) {
+bool Comms::Send(const std::string& msg) {
     return impl_->Send(msg);
 }
 
-bool Comms::Receive(Message* msg) {
+bool Comms::Receive(std::string* msg) {
     return impl_->Receive(msg);
 }
 

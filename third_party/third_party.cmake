@@ -16,3 +16,6 @@ add_dependencies(cppzmq libzmq-static)
 # gflags
 add_subdirectory("${THIRD_PARTY_DIR}/gflags")
 #include_directories("${THIRD_PARTY_DIR}/gflags/src")
+
+# cereal
+include_directories("${THIRD_PARTY_DIR}/cereal/include")

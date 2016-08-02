@@ -2,19 +2,14 @@
 
 #include <cppzmq/zmq.hpp>
 
-Message::~Message() {}
 
 // PingMessage Impl begin
 
 PingMessage::PingMessage(std::string msg_str) : data_{msg_str} {}
 
-zmq::message_t PingMessage::GetZMQMessage() const {
-    return zmq::message_t{data_.begin(), data_.end()};
-}
-
 void PingMessage::Parse(const zmq::message_t& msg) {
-    data_ = static_cast<const char*>(msg.data());
-    data_.resize(msg.size());
+    auto cstr = static_cast<const char*>(msg.data());
+    data_ = std::string(cstr, msg.size());
 }
 
 // PingMessage Impl end
@@ -23,12 +18,9 @@ void PingMessage::Parse(const zmq::message_t& msg) {
 
 PongMessage::PongMessage(std::string msg_str) : data_{msg_str} {}
 
-zmq::message_t PongMessage::GetZMQMessage() const {
-    return zmq::message_t{data_.begin(), data_.end()};
-}
-
 void PongMessage::Parse(const zmq::message_t& msg) {
-    data_ = static_cast<const char*>(msg.data());
+    auto cstr = static_cast<const char*>(msg.data());
+    data_ = std::string(cstr, msg.size());
 }
 
 // PongMessage Impl end

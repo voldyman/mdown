@@ -1,43 +1,65 @@
 #pragma once
 
-#include "string"
+#include <sstream>
+
+#include <cereal/archives/binary.hpp>
+#include <cereal/types/string.hpp>
 
 namespace zmq {
 class message_t;
 }
 
-class Message {
+template <class Message>
+std::string serialize(const Message& message) {
+    std::stringstream ss;
+    {
+        cereal::BinaryOutputArchive archive(ss);
+        archive(message);
+    }
+    return ss.str();
+}
+
+template <class Message>
+void deserialize(const std::string& data, Message* message) {
+    std::stringstream ss(data);
+    {
+        cereal::BinaryInputArchive archive(ss);
+        archive(*message);
+    }
+}
+
+class PingMessage {
   public:
-    virtual zmq::message_t GetZMQMessage() const = 0;
-    virtual void Parse(const zmq::message_t& msg) = 0;
+    explicit PingMessage(std::string msg_str = "Ping");
 
-    virtual ~Message() = 0;
-};
-
-class PingMessage : public Message {
-  public:
-    PingMessage(std::string msg_str = "Ping");
-
-    zmq::message_t GetZMQMessage() const override;
-    void Parse(const zmq::message_t& msg) override;
+    void Parse(const zmq::message_t& msg);
 
     const std::string& data() {
         return data_;
+    }
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(data_);
     }
 
   private:
     std::string data_;
 };
 
-class PongMessage : public Message {
+class PongMessage {
   public:
-    PongMessage(std::string msg_str = "Pong");
+    explicit PongMessage(std::string msg_str = "Pong");
 
-    zmq::message_t GetZMQMessage() const override;
-    void Parse(const zmq::message_t& msg) override;
+    void Parse(const zmq::message_t& msg);
 
     const std::string& data() {
         return data_;
+    }
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(data_);
     }
 
   private:

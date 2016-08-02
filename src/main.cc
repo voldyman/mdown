@@ -39,14 +39,20 @@ void StartDaemon(std::function<void(void)> daemon_func, bool wait_for_exit = fal
 
 void zmq_server() {
     Comms comm(CommsMode::SERVER);
-    PingMessage ping;
-    comm.Send(ping);
+
+    PingMessage ping("ping from daemon");
+    comm.Send(serialize(ping));
 }
 
 void zmq_client() {
     Comms comm(CommsMode::CLIENT);
+
+    std::string raw_message;
+    comm.Receive(&raw_message);
+
     PingMessage pong_message;
-    comm.Receive(&pong_message);
+    deserialize(raw_message, &pong_message);
+
     std::cout << pong_message.data() << std::endl;
 }
 
