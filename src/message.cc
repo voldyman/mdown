@@ -1,4 +1,4 @@
-#include "message.hh"
+#include "message.h"
 
 #include <cppzmq/zmq.hpp>
 

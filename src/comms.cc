@@ -1,16 +1,16 @@
-#include "comms.hh"
+#include "comms.h"
 
 #include <array>
 
 #include <cppzmq/zmq.hpp>
-#include <message.hh>
+#include <message.h>
 
 const int PORT = 2211;
 
 namespace {
 // static
 zmq::message_t ZmqMessageFromString(const std::string& str) {
-    return zmq::message_t{str.c_str(), str.size()};
+    return zmq::message_t{str.data(), str.size()};
 }
 
 // static

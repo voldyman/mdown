@@ -4,8 +4,8 @@
 
 #include <gflags/gflags.h>
 
-#include "comms.hh"
-#include "message.hh"
+#include "comms.h"
+#include "message.h"
 
 namespace {
 
