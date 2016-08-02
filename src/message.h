@@ -32,8 +32,6 @@ class PingMessage {
   public:
     explicit PingMessage(std::string msg_str = "Ping");
 
-    void Parse(const zmq::message_t& msg);
-
     const std::string& data() {
         return data_;
     }
@@ -50,8 +48,6 @@ class PingMessage {
 class PongMessage {
   public:
     explicit PongMessage(std::string msg_str = "Pong");
-
-    void Parse(const zmq::message_t& msg);
 
     const std::string& data() {
         return data_;
